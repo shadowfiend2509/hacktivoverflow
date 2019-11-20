@@ -3,7 +3,7 @@ const cron = require('node-cron');
 const sendMail = require('./sendMail')
 
 
-cron.schedule("* 5 5 5 * *", function() {
+cron.schedule("0 5 5 5 * *", function() {
   User.find()
   .then(users => {
     users.forEach((el, i) => {

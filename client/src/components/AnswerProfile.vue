@@ -4,6 +4,7 @@
   <h3>{{ getAnswer.QuestionId.title }}</h3>
   <div class="row">
     <div class="col">
+      <!-- {{getAnswer}} -->
     <small>Vote: {{ getAnswer.QuestionId.upvotes.length - getAnswer.QuestionId.downvotes.length }}</small>
     </div>
     <div class="col">
@@ -17,10 +18,11 @@
   <hr>
   </div>
   <div class="foott">
-  <div class="row">
-    <div class="col-6">
+    <div class="row">
+      <div class="col-6">
+        
+      </div>
     </div>
-  </div>
   </div>
 </div>
 </template>

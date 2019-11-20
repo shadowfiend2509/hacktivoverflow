@@ -40,7 +40,7 @@
       <div class='answer'>
         <a class='textAnswer'>Answer</a>
       </div>
-      <div class="question2">
+      <div class="answer">
         <div v-for='(answer, i) in answers' :key='i'>
           <Answer :get-answer='answer' @fetchAnswer='okeyFetchAnswer'/>
         </div>
@@ -125,31 +125,31 @@ export default {
       })
     },
     fetchDataById () {
-    const id = this.$route.params.id
-    axios({
-      method : 'get',
-      url: `/questions/search/${id}`,
-    })
-      .then(({data}) => {
-      this.question = data
-      this.$awn.success("fetchingData")
+      const id = this.$route.params.id
+      axios({
+        method : 'get',
+        url: `/questions/search/${id}`,
       })
-      .catch(err => {
-      this.$awn.warning(err.response.data.msg)
-      })
+        .then(({data}) => {
+        this.question = data
+        this.$awn.success("fetchingData")
+        })
+        .catch(err => {
+        this.$awn.warning(err.response.data.msg)
+        })
     },
     okeyFetchAnswer () {0
-    this.fetchAnswer()
-    },
-    fetchAnswer () {
-    const getId = this.$route.params.id
-    this.$store.dispatch('getAnswer', getId)
-      .then(data => {
-      this.answers = data
-      })
-      .catch(err => {
-      this.$awn.warning(err.response.data.msg)
-      })
+      this.fetchAnswer()
+      },
+      fetchAnswer () {
+      const getId = this.$route.params.id
+      this.$store.dispatch('getAnswer', getId)
+        .then(data => {
+        this.answers = data
+        })
+        .catch(err => {
+        this.$awn.warning(err.response.data.msg)
+        })
     },
     postAnswer () {
     const QuestionId = this.$route.params.id

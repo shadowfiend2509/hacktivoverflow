@@ -12,11 +12,12 @@
         </div>
       </b-tab>
       <b-tab title="ANSWER">
-        <div class="topp">
-          </div>
+        <!-- <div class="topp">
+          </div> -->
+          <!-- {{ answers }} -->
           <div v-for='(answer, i) in answers' :key='i' class='tiapcard'>
-          <AnswerProfile :get-answer='answer' />
-        </div>
+            <AnswerProfile :get-answer='answer' />
+          </div>
       </b-tab>
     </b-tabs>
   </div>
@@ -48,18 +49,6 @@
       </b-form-group>
     </form>
     </b-modal>
-
-<!--
-  </div>
-  <div class="col-6">
-    <div class="topp">
-    <h3>My Answer</h3>
-    </div>
-    <div v-for='(answer, i) in answers' :key='i' class='tiapcard'>
-    <AnswerProfile :get-answer='answer' />
-    </div>
-  </div>
-  </div> -->
 </div>
 </template>
 
@@ -152,6 +141,7 @@ export default {
       this.$awn.info(this.answers[0].QuestionId.title)
       } else {
       this.answers = data
+      console.log(this.answers)
       this.$awn.success('We got your Answer')
       }
     })

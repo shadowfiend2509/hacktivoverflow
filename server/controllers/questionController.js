@@ -1,15 +1,16 @@
 const Question = require("../models/questions");
 const Answer = require('../models/answer');
+const User = require('../models/user');
 const mongoose = require('mongoose')
 
 module.exports = {
   findAll (req,res,next) {
-  console.log('masuk pak eko')
-  Question.find().populate('UserId').sort([['createdAt','descending']])
-    .then(questions => {
-      res.status(200).json(questions)
-    })
-    .catch(next)
+    console.log('masuk pak eko')
+    Question.find().populate('UserId').sort([['createdAt','descending']])
+      .then(questions => {
+        res.status(200).json(questions)
+      })
+      .catch(next)
  },
  findQuestionUser (req,res,next) {
   const UserId = new mongoose.Types.ObjectId(req.loggedUser.id)
@@ -23,21 +24,30 @@ module.exports = {
   },
   findOneQuestion (req,res,next) {
   const _id = req.params.id;
-  Question.findById({_id}).populate('UserId')
+  console.log(req.params.id)
+  Question.findById({_id})
     .then(question => {
-      res.status(200).json(question)
+      console.log('before update')
+      console.log(question)
+      let newViews = Number(question.views) + 1
+      return Question.findByIdAndUpdate(_id, { views: newViews}, {new: true}).populate('UserId')
+    })
+    .then(question1 => {
+      console.log('after update')
+      console.log(question1)
+      res.status(200).json(question1)
     })
     .catch(next)
   },
   create (req,res,next) {
-  console.log(req.body.tags)
-  const UserId = req.loggedUser.id
-  const { title, description, tags } = req.body;
-  Question.create({ title, description, UserId, tags })
-    .then(data => {
-      res.status(201).json({ msg: 'Question Created!', question: data });
-    })
-    .catch(next);
+    console.log(req.body.tags)
+    const UserId = req.loggedUser.id
+    const { title, description, tags } = req.body;
+    Question.create({ title, description, UserId, tags })
+      .then(data => {
+        res.status(201).json({ msg: 'Question Created!', question: data });
+      })
+      .catch(next);
   },
   findByTag (req,res,next) {
   const tag = req.params.name;
@@ -55,6 +65,31 @@ module.exports = {
     })
     .catch(next)
   },
+  findAllTag (req, res, next) {
+    let tempTag = []
+    Question.find()
+      .then(questions => {
+        questions.forEach((el, i) => {
+          el.tags.forEach((tag,j) => {
+            if(tempTag.length == 0) {
+              tempTag.push(tag)
+            } else {
+              var counter = 0
+              tempTag.forEach((temp, k) => {
+                if(temp === tag) {
+                  counter++
+                }
+              })
+            }
+            if(counter == 0) {
+              tempTag.push(tag)
+            }
+          })
+        })
+        res.status(200).json({tag: tempTag})
+      })
+      .catch(next)
+  },
   searchTitle (req,res,next) {
   const title = req.params.name;
   Question.find({title: new RegExp(title, 'i')})
@@ -64,91 +99,101 @@ module.exports = {
     .catch(next)
   },
   updateUpVote (req,res,next) {
-  const id = req.loggedUser.id
-  const _id = req.body.id
-  Question.findById({_id})
-    .then(question => {
-      let pass = true;
-      question.upvotes.forEach((el,i) => {
-        if(el == id) {
-          pass = false
+    const id = req.loggedUser.id
+    const _id = req.body.id
+    Question.findById({_id})
+      .then(question => {
+        let pass = true;
+        question.upvotes.forEach((el,i) => {
+          if(el == id) {
+            pass = false
+          }
+        })
+        let passUp = true
+        question.downvotes.forEach((el, i) => {
+          if(el == id) passUp = false
+        })
+        if(!pass) throw {msg: 'downspam'}
+        else if(!passUp) {
+          return Question.findByIdAndUpdate(_id, {$pull: {downvotes: id}})
+        } else {
+          return Question.findByIdAndUpdate({_id},{ $push: {upvotes: id}})
         }
       })
-      if(!pass) throw { msg: 'upspam'}
-      else {
-        return Question.findByIdAndUpdate({_id},{ $push: { "upvotes": id}})
-      }
-    })
-    .then(data => {
-      return Question.findById({_id})
-    })
-    .then(question => {
-      for(let i=0; i<question.downvotes.length; i++ ){
-        if(question.downvotes[i] == id) {
-          question.downvotes.splice(i, 1)
-        }
-      }
-      return Question.findByIdAndUpdate({_id},{downvotes: question.downvotes})
-    })
-    .then(success => {
-      res.status(201).json(success)
-    })
-    .catch(next)
+      .then(success => {
+        res.status(201).json(success)
+      })
+      .catch(next)
   },
   updateDownVote (req,res,next) {
-  const id = req.loggedUser.id
-  const _id = req.body.id
-  Question.findById({_id})
-    .then(question => {
-      let pass = true;
-      question.downvotes.forEach((el,i) => {
-        if(el == id) {
-          pass = false;
+    const id = req.loggedUser.id
+    const _id = req.body.id
+    Question.findById({_id})
+      .then(question => {
+        let pass = true;
+        question.downvotes.forEach((el,i) => {
+          if(el == id) {
+            pass = false;
+          }
+        })
+        let passUp = true
+        question.upvotes.forEach((el, i) => {
+          if(el == id) passUp = false
+        })
+        if(!pass) throw {msg: 'downspam'}
+        else if(!passUp) {
+          return Question.findByIdAndUpdate(_id, {$pull: {upvotes: id}})
+        } else {
+          return Question.findByIdAndUpdate({_id},{$push: {downvotes: id}})
         }
       })
-      if(!pass) throw {msg: 'downspam'}
-      else {
-        return Question.findByIdAndUpdate({_id},{$push: { "downvotes": id}})
-      }
-    })
-    .then(data => {
-      return Question.findById({_id})
-    })
-    .then(question => {
-      for(let i=0; i<question.upvotes.length; i++) {
-        if(question.upvotes[i] == id) {
-          question.upvotes.splice(i,1)
-        }
-      }
-      return Question.findByIdAndUpdate({_id},{upvotes: question.upvotes})
-    })
-    .then(success => {
-      res.status(201).json(success)
-    })
-    .catch(next)
+      .then(success => {
+        res.status(201).json(success)
+      })
+      .catch(next)
   },
   deleteQuestion (req,res,next) {
-  const _id = new mongoose.Types.ObjectId(req.params.id)
-  Question.findByIdAndDelete({_id})
-    .then(success => {
-    return Answer.find({QuestionId: _id})
-    })
-    .then(answers => {
-    console.log(answers)
-    return Answer.deleteMany({ QuestionId: _id})
-    })
-    .then(_ => {
-    res.status(200).json({msg: "success delete all"})
-    })
-    .catch(next)
+    const _id = new mongoose.Types.ObjectId(req.params.id)
+    Question.findByIdAndDelete({_id})
+      .then(success => {
+        return Answer.find({QuestionId: _id})
+      })
+      .then(answers => {
+        return Answer.deleteMany({ QuestionId: _id})
+      })
+      .then(_ => {
+        res.status(200).json({msg: "success delete all"})
+      })
+      .catch(next)
+    },
+    updateQuestion (req,res,next) {
+      const _id = req.params.id
+      Question.findByIdAndUpdate({_id},{title: req.body.title, description: req.body.description})
+        .then(_ => {
+        res.status(201).json({msg: 'success update'})
+        })
+        .catch(next)
   },
-  updateQuestion (req,res,next) {
-  console.log(req.params.id)
-  const _id = req.params.id
-  Question.findByIdAndUpdate({_id},{title: req.body.title, description: req.body.description})
-    .then(_ => {
-    res.status(201).json({msg: 'success update'})
-    })
-    .catch(next)
+  findByWatchTag (req, res, next) {
+    let tempUserWatch 
+    User.findById(req.loggedUser.id)
+      .then(user => {
+        tempUserWatch = user.watchTag
+        return Question.find().populate('UserId')
+      })
+      .then(question => {
+        let tempQuestionWatchTag = []
+        question.forEach((ques, a) => {
+          ques.tags.forEach((tag, i) => {
+            tempUserWatch.forEach((el, i) => {
+              if(tag == el) {
+                tempQuestionWatchTag.push(ques)
+              }
+            })
+          })
+        })
+        res.status(200).json({question: tempQuestionWatchTag})
+      })
+      .catch(next)
   }
 }

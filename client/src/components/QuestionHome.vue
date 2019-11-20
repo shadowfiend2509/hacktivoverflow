@@ -20,11 +20,16 @@
         <div v-for='(tag,i) in question.tags' :key='i'>
           <Tag :get-tag='tag'/>
         </div>
-        <h6>{{ answerData.length }} Answer</h6><unicon name='fast-mail'></unicon>
+        <div class='d-flex ml-4'>
+          <h6>{{ answerData.length }} Answer</h6><unicon name='fast-mail'></unicon>
+        </div>
+        <div class='ml-5'>
+          {{ question.views }} views
+        </div>
         </div>
         <div class="col-4">
         <div class="userright">
-          by:{{ question.UserId.username }}
+          by:<unicon name='user'></unicon><a href='#' @click='goUserProfile(question.UserId._id)'>{{ question.UserId.username }}</a>
         </div>
         </div>
       </div>
@@ -40,77 +45,94 @@ import axios from '@/apis/server.js'
 
 export default {
   data () {
-  return {
-    answerData: '',
-    upVote: '',
-    downVote: ''
-  }
+    return {
+      answerData: '',
+      upVote: '',
+      downVote: ''
+    }
   },
   components: {
-  Tag
+    Tag
   },
   props: ['question'],
   methods: {
-  plusvote (id) {
-    this.$store.dispatch('plusVote', id)
-    .then(data => {
-      console.log(data)
-      this.$awn.success('You like this question, u can add to favorite by click the star')
-      this.$emit('fetchAgain')
-    })
-    .catch(err => {
-      if(err.response.data.msg == 'Authentication Error!'){
-      this.$awn.warning(err.response.data.msg+ '.. hint: Login/Register yeah.. i will send the form in 3 second')
-      setTimeout(() => {
-        this.$router.push('/login')        
-      }, 3000);
-      }else{
-      this.$awn.warning(err.response.data.msg)
-      }
-    })
-  },
-  minvote (id) {
-    this.$store.dispatch('minVote', id)
-    .then(data => {
-      console.log(data)
-      this.$awn.success('You dislike this question')
-      this.$emit('fetchAgain')
-    })
-    .catch(err => {
-      if(err.response.data.msg == 'Authentication Error!'){
-      this.$awn.warning(err.response.data.msg+ '.. hint: Login/Register yeah.. i will send the form in 3 second')
-      setTimeout(() => {
-        this.$router.push('/login')        
-      }, 3000);
-      }else{
-      this.$awn.warning(err.response.data.msg)
-      }
-    })
-  },
-  getAnswer () {
-    const id = this.question._id
-    this.$store.dispatch('getAnswer', id)
-    .then(data => {
-      this.answerData = data
-    })
-    .catch(err => {
-      this.$awn.warning(err.response.data.msg)
-    })
-  }
+    goUserProfile (id) {
+      this.$router.push(`/profile/${id}`)
+    },
+    plusvote (id) {
+      this.$Progress.start()
+      this.$store.dispatch('plusVote', id)
+        .then(data => {
+          console.log(data)
+          this.$awn.success('You like this question, u can add to favorite by click the star')
+          this.$emit('fetchAgain')
+          setTimeout(() => {
+            this.$Progress.finish()
+          }, 1000);
+        })
+        .catch(err => {
+          if(err.response.data.msg == 'Authentication Error!'){
+            this.$awn.warning(err.response.data.msg+ '.. hint: Login/Register yeah.. i will send the form in 3 second')
+            setTimeout(() => {
+              this.$router.push('/login') 
+              this.$Progress.fail()       
+            }, 3000);
+          }else{
+            this.$awn.warning(err.response.data.msg)
+            this.$Progress.fail()
+          }
+        })
+    },
+    minvote (id) {
+      this.$Progress.start()
+      this.$store.dispatch('minVote', id)
+        .then(data => {
+          console.log(data)
+          this.$awn.success('You dislike this question')
+          this.$emit('fetchAgain')
+          setTimeout(() => {
+            this.$Progress.finish()
+          }, 1000);
+        })
+        .catch(err => {
+          if(err.response.data.msg == 'Authentication Error!'){
+              this.$awn.warning(err.response.data.msg+ '.. hint: Login/Register yeah.. i will send the form in 3 second')
+            setTimeout(() => {
+              this.$router.push('/login')
+              this.$Progress.fail()        
+            }, 3000);
+          }else{
+            this.$awn.warning(err.response.data.msg)
+            setTimeout(() => {
+              this.$Progress.fail()
+            }, 1000);
+          }
+        })
+    },
+    getAnswer () {
+      const id = this.question._id
+      this.$store.dispatch('getAnswer', id)
+        .then(data => {
+          this.answerData = data
+        })
+        .catch(err => {
+          this.$awn.warning(err.response.data.msg)
+        })
+    }
   },
   computed: {
-  data: {
-    get () {
-    return this.question.upvotes.length - this.question.downvotes.length
-    },
-    set () {
-    this.upvote= this.question.upvotes
-    this.downvote= this.question.downvotes
-    }
+    data: {
+      get () {
+        return this.question.upvotes.length - this.question.downvotes.length
+      },
+      set () {
+        this.upvote= this.question.upvotes
+        this.downvote= this.question.downvotes
+      }
   }
   },
   created () {
-  this.getAnswer()
+    this.getAnswer()
   }
 }
 </script>

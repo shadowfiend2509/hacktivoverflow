@@ -8,12 +8,14 @@ const QSchema = new Schema ({
   downvotes: [],
   tags: [],
   UserId: { type: Schema.Types.ObjectId, ref: 'users' },
-  createdAt: Date
+  createdAt: Date,
+  views: Number
 })
 
 QSchema.pre('save', function (next) {
   this.createdAt = new Date()
   this.upvotes = [];
+  this.views = 0;
   this.downvotes = [];
   next()
 })

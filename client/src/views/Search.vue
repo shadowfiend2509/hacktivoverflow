@@ -12,7 +12,7 @@ import axios from '@/apis/server.js'
 
 export default {
   components: {
-  TitleSearch
+    TitleSearch
   },
   data () {
   return {
@@ -20,23 +20,23 @@ export default {
   }
   },
   methods: {
-  filtering () {
-    const title = this.$route.params.name
-    axios({
-    method: 'get',
-    url: `/questions/find/${title}`
-    })
-    .then(({data}) => {
-      this.find = data;
-      this.$awn.success('Filtering Search');
-    })
-    .catch(err => {
-      this.$awn.warning(err.response.data.msg)
-    })
-  }
+    filtering () {
+      const title = this.$route.params.name
+      axios({
+      method: 'get',
+      url: `/questions/find/${title}`
+      })
+      .then(({data}) => {
+        this.find = data;
+        this.$awn.success('Filtering Search');
+      })
+      .catch(err => {
+        this.$awn.warning(err.response.data.msg)
+      })
+    }
   },
   created () {
-  this.filtering()
+    this.filtering()
   }
 }
 </script>

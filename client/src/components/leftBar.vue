@@ -7,13 +7,13 @@
       </router-link>
     </div>
     <div class="cols">
-      <router-link to='/rating'>Rating</router-link>
+      <router-link to='/rating'>Top Question</router-link>
     </div>
     <div class="cols">
       <router-link to='/profile'>Profile</router-link>
     </div>
-    <div class="colbtm">
-      
+    <div class="cols">
+      <router-link to='/tags'>Tags</router-link>
     </div>
   </div>
 </div>

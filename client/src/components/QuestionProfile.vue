@@ -1,5 +1,5 @@
 <template>
-<div class="card25 card-blue-light">
+<div class="card25 card card-blue-light">
   <div class="tittle">
   <h3>{{ getQuestion.title }}</h3>
   <div class="row">
@@ -19,14 +19,14 @@
   <div class="foott">
   <div class="row">
     <div class="col-6">
-    <div class='modall'>
-       <!-- <b-button v-b-modal.modal-prevent-closing>Edit Question</b-button> -->
-        <b-button v-b-modal.modal-xl variant="primary" @click='editData()'>Edit Question</b-button>
+      <div class='modall'>
+        <!-- <b-button v-b-modal.modal-prevent-closing>Edit Question</b-button> -->
+          <b-button v-b-modal.modal-xl variant="primary" @click='editData()'>Edit Question</b-button>
+      </div>
     </div>
-    </div>
-    <div class="col-6 kanann">
-   <b-button @click="showMsgBoxTwo(getQuestion._id)">Delete</b-button>
-    </div>
+      <div class="col-6 kanann">
+      <b-button @click="showMsgBoxTwo(getQuestion._id)">Delete</b-button>
+      </div>
   </div>
   </div>
 </div>
@@ -96,10 +96,11 @@ export default {
 
 <style lang='scss'>
 .kanann{
-  bottom: -10px;
+  bottom: 10px;
 }
 .modall{
-  padding:10px;
+  padding: 10px;
+  margin: -20px 0px
 }
 .button2{
   position: absolute;

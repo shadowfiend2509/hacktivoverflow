@@ -31,30 +31,32 @@
 
 <script>
 import QuestionHome from '../components/QuestionHome'
+import io from 'socket.io-client'
 
 export default {
   data () {
-  return {
-    questions: ''
-  }
+    return {
+      questions: [],
+      socket: io.connect('http://localhost:3000')
+    }
   },
   components: {
-  QuestionHome
+    QuestionHome
   },
   methods: {
-  okeFetch () {
-    this.fetchData()
-  },
-  fetchData () {
-    this.$store.dispatch('fetchData')
-    .then(data => {
-      this.questions = data
-    })
-    .catch(console.log);
-  }
+    okeFetch () {
+      this.fetchData()
+    },
+    fetchData () {
+      this.$store.dispatch('fetchData')
+        .then(data => {
+          this.questions = data
+        })
+        .catch(console.log);
+    }
   },
   created () {
-  this.fetchData();
+    this.fetchData()
   }
 }
 </script>

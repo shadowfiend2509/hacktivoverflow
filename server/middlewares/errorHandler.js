@@ -20,6 +20,8 @@ module.exports = (err,req,res,next) => {
     res.status(404).json({ msg: 'Answer not Found!'})
   }else if(err.kind == 'ObjectId'){
     res.status(403).json({ msg: 'objectId'})
+  }else if(err.msg == 'not found') {
+    res.status(400).json({ msg: 'Sorry, your request not Found!'})
   }
   else {
     res.status(500).json(err)

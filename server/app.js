@@ -39,7 +39,11 @@ app.use(errorH)
 
 
 io.on('connection', function(socket){
-  console.log('a user connected');
+
+  socket.on('send-question', function (data) {
+    io.emit('send-question', data)
+    data = null
+  })
 });
 
 http.listen(PORT, cron, function(){

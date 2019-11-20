@@ -23,12 +23,25 @@ const UserSchema = new Schema({
     type: String,
     require: true
   },
-  createdAt: Date
+  createdAt: Date,
+  views: Number,
+  bronze: [],
+  silver: [],
+  gold: [],
+  watchTag: [],
+  profile_image: String,
+  city: String
 })
 
 UserSchema.pre('save', function (next) {
   this.password = hashPassword(this.password);
   this.createdAt = new Date();
+  this.views = 0
+  this.watchTag = [];
+  this.silver = [];
+  this.bronze = [];
+  this.gold = []
+  this.profile_image = 'https://storage.cloud.google.com/defaultimage/59162520-blanco-perfil-de-usuario-icono-en-el-boto%CC%81n-negro-aislado-en-blanco.jpg?authuser=1&folder&organizationId'
   next()
 })
 

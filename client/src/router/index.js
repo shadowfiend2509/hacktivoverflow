@@ -19,6 +19,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/Login.vue')
   },
   {
+    path: '/tags',
+    name: 'tags',
+    component: () => import(/* webpackChunkName: "tags" */ '../views/AllTags.vue')
+  },
+  {
     path: '/ask',
     name: 'ask',
     component: () => import(/* webpackChunkName: 'ask' */ '../views/Ask.vue')
@@ -52,6 +57,11 @@ const routes = [
     path: '/profile',
     name: 'profile',
     component: () => import(/* webpackChunkName: 'profile' */ '../views/Profile.vue')
+  },
+  {
+    path: '/profile/:id',
+    name: 'userProfile',
+    component: () => import(/* webpackChunkName: "userProfile" */ '../views/UserProfile.vue')
   }
 ]
 

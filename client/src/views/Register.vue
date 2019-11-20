@@ -1,30 +1,43 @@
 <template>
-  <div class="container">
+<div class="container">
   <form autocomplete="off" @submit.prevent="register()">
     <div class="group">
-    <label for="email">Username:</label>
-    <input type="text" id="username" name="username" v-model='username'>
+      <label for="email">Username:</label>
+      <input type="text" id="username" name="username" v-model='username'>
     </div>
     <div class="group">
-    <label for="password">Password:</label>
-    <input id="password" type="password" name="password" v-model='password'>
+      <label for="password">Password:</label>
+      <input id="password" type="password" name="password" v-model='password'>
     </div>
     <div class="group">
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" v-model='email'>
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" v-model='email'>
     </div>
-    <input type="submit" value="register" id="submit">
+    <div class="group">
+      <label for="email">Email:</label>
+      <select v-model='city'>
+        <option value='Jakarta'>Jakarta</option>
+        <option value='Palembang'>Palembang</option>
+        <option value="Surabaya">Surabaya</option>
+        <option value="Medan">Medan</option>
+        <option value="Batam">Batam</option>
+        <option value="Papua">Papua</option>
+      </select>
+      <input type="email" id="email" name="email" v-model='email'>
+    </div>
+      <input type="submit" value="register" id="submit">
   </form>
-  </div>
+</div>
 </template>
 
 <script>
 export default {
   data () {
     return {
-      username: '',
-      password: '',
-      email: ''
+      username: null,
+      password: null,
+      email: null,
+      city: null
     }
   },
   methods: {
@@ -32,7 +45,8 @@ export default {
     const payload = {
     username: this.username,
     password: this.password,
-    email: this.email
+    email: this.email,
+    city: this.city
   }
     this.$store.dispatch('register', payload)
     .then(success => {
