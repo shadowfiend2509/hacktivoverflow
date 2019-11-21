@@ -17,10 +17,10 @@
   <p v-html='getAnswer.response'></p>
   <hr>
   </div>
-  <div class="foott">
+  <div class="foott" v-if='getAnswer._id'>
     <div class="row">
       <div class="col-6">
-        
+        <button class="btn-outline-danger btn btn-md" @click='deleteAnswer(getAnswer._id)'>DELETE</button>
       </div>
     </div>
   </div>
@@ -31,7 +31,32 @@
 import axios from '@/apis/server.js'
 
 export default {
-  props: ['getAnswer']
+  props: ['getAnswer'],
+  methods: {
+    deleteAnswer (id) {
+      this.$Progress.start()
+      axios({
+        method: 'delete',
+        url: `/answers/${id}`,
+        headers:{
+          token: localStorage.getItem('token')
+        }
+      })
+        .then(({data}) => {
+          this.$emit('fetchAnswer')
+          this.$Progress.finish()
+        })
+        .catch(err => {
+          this.$awn.warning(err.response.data.msg)
+          this.$Progress.fail()
+        })
+    }
+  },
+  watch: {
+    getAnswer (val) {
+      this.getAnswer = val
+    }
+  }
 }
 </script>
 

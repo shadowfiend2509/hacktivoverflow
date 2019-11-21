@@ -16,7 +16,7 @@
           </div> -->
           <!-- {{ answers }} -->
           <div v-for='(answer, i) in answers' :key='i' class='tiapcard'>
-            <AnswerProfile :get-answer='answer' />
+            <AnswerProfile :get-answer='answer' @fetchAnswer='okeyfetchQuestion'/>
           </div>
       </b-tab>
 
