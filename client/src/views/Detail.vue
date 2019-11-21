@@ -91,38 +91,54 @@ export default {
   },
   methods: {
     plusvote (id) {
+      this.$Progress.start()
       this.$store.dispatch('plusVote', id)
       .then(data => {
         this.$awn.success('You like this question, u can add to favorite by click the star')
         this.fetchDataById()
+        setTimeout(() => {
+          this.$Progress.finish()
+        }, 500);
       })
       .catch(err => {
         if(err.response.data.msg == 'Authentication Error!'){
           this.$awn.warning(err.response.data.msg+ '.. hint: Login/Register yeah.. i will send the form in 3 second')
           setTimeout(() => {
-          this.$router.push('/login')        
+          this.$router.push('/login')   
+          this.$Progress.fail()     
           }, 3000);
         }else{
           this.$awn.warning(err.response.data.msg)
+          setTimeout(() => {
+            this.$Progress.fail()
+          }, 1000);
         }
       })
     },
     minvote (id) {
-    this.$store.dispatch('minVote', id)
-      .then(data => {
-      this.$awn.success('You dislike this question')
-      this.fetchDataById()
-      })
-      .catch(err => {
-      if(err.response.data.msg == 'Authentication Error!'){
-        this.$awn.warning(err.response.data.msg+ '.. hint: Login/Register yeah.. i will send the form in 3 second')
-        setTimeout(() => {
-        this.$router.push('/login')        
-        }, 3000);
-      }else{
-        this.$awn.warning(err.response.data.msg)
-      }
-      })
+      this.$Progress.start()
+      this.$store.dispatch('minVote', id)
+        .then(data => {
+          this.$awn.success('You dislike this question')
+          this.$Progress.finish()
+          setTimeout(() => {
+            this.fetchDataById()
+          }, 500);
+        })
+        .catch(err => {
+          if(err.response.data.msg == 'Authentication Error!'){
+            this.$awn.warning(err.response.data.msg+ '.. hint: Login/Register yeah.. i will send the form in 3 second')
+            setTimeout(() => {
+            this.$router.push('/login')
+            this.$Progress.fail()
+            }, 3000);
+          }else{
+            this.$awn.warning(err.response.data.msg)
+            setTimeout(() => {
+              this.$Progress.fail()
+            }, 500);
+          }
+        })
     },
     fetchDataById () {
       const id = this.$route.params.id
@@ -152,32 +168,32 @@ export default {
         })
     },
     postAnswer () {
-    const QuestionId = this.$route.params.id
-    const UserId = this.$store.state.user._id
-    const response = this.inputAnswer
-    if(this.$store.state.islogin){
-      axios({
-      method: 'post',
-      url: `/answers/${QuestionId}`,
-      headers: {
-        token: localStorage.getItem('token')
-      },
-      data: {
-        response
+      const QuestionId = this.$route.params.id
+      const UserId = this.$store.state.user._id
+      const response = this.inputAnswer
+      if(this.$store.state.islogin){
+        axios({
+          method: 'post',
+          url: `/answers/${QuestionId}`,
+          headers: {
+            token: localStorage.getItem('token')
+          },
+          data: {
+            response
+          }
+          })
+          .then(({data}) => {
+            this.inputAnswer = ''
+            this.$awn.success('success post your answer!')
+            this.fetchAnswer()
+          })
+          .catch(err => {
+            this.$awn.warning(err.response.data.msg)
+        })
+      } else {
+        this.$awn.warning('you cant post login First')
+        this.$router.push('/login')
       }
-      })
-      .then(({data}) => {
-        this.inputAnswer = ''
-        this.$awn.success('success post your answer!')
-        this.fetchAnswer()
-      })
-      .catch(err => {
-        this.$awn.warning(err.response.data.msg)
-      })
-    } else {
-      this.$awn.warning('you cant post login First')
-      this.$router.push('/login')
-    }
     }
   },
   created () {
@@ -189,7 +205,7 @@ export default {
 
 <style scoped>
 .answer{
-  margin-top: -35px;
+  margin-top: 0px;
   text-align:center
 }
 .textAnswer {

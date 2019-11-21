@@ -19,12 +19,16 @@
             <AnswerProfile :get-answer='answer' />
           </div>
       </b-tab>
+
+      <b-tab title="PROFILE">
+        <router-link :to='{path: `/profile/${$store.state.user._id}`}'>Go To Profile</router-link>
+      </b-tab>
     </b-tabs>
   </div>
   <b-modal 
     id="modal-xl" 
     size="xl" 
-    title="Extra Large Modal"
+    title="Edit Question"
     @ok="handleSubmit"
     >
     <form ref="form" @submit.prevent="handleSubmit">
@@ -202,7 +206,7 @@ export default {
 }
 </script>
 
-<style lang='scss'>
+<style lang='scss' scoped>
 .tiapcard{
   padding-top:10px;
 }

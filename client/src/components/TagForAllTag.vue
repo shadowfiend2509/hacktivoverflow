@@ -1,8 +1,8 @@
 <template>
   <b-card-text>
     <div class="d-flex">
-      <button class="btn btn-outline-success" v-if='!isWatched' @click='watchTag'><unicon name='stopwatch'></unicon>Watch</button>
-      <button class="btn btn-danger btn-sm" v-else @click='watchTag'><unicon name='stopwatch-slash'></unicon>UnWatch</button>
+      <button class="btn btn-outline-success" v-if='!isWatched' @click='watchTag'><unicon name='eye'></unicon>Watch</button>
+      <button class="btn btn-danger btn-sm" v-else @click='watchTag'><unicon name='eye-slash'></unicon>UnWatch</button>
       <button class="btn btn-outline-warning ml-2" @click='goTagPage(getTag)'>See Questions</button>
     </div>
   </b-card-text>

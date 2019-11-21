@@ -40,9 +40,8 @@ app.use(errorH)
 
 io.on('connection', function(socket){
 
-  socket.on('send-question', function (data) {
-    io.emit('send-question', data)
-    data = null
+  socket.on('send-message', function (data) {
+    io.emit('send-message', data)
   })
 });
 

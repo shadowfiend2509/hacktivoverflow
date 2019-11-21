@@ -10,7 +10,7 @@ Route.post('/:id', authentication, create);
 Route.get('/:id', findId);
 Route.get('/', authentication, findAnswerUser);
 
-Route.patch('/up', authentication, updateUpAnswer);
-Route.patch('/down', authentication, updateDownVote);
+Route.patch('/up/:id', authentication, updateUpAnswer);
+Route.patch('/down/:id', authentication, updateDownVote);
 
 module.exports = Route;

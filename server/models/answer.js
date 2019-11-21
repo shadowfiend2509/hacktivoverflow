@@ -2,7 +2,7 @@ const Mongoose = require('mongoose');
 const Schema = Mongoose.Schema;
 
 const ASchema = new Schema ({
-  response: { type: String, required: true },
+  response: { type: String, required: [true, 'response is required'] },
   upvotes: [],
   downvotes: [],
   QuestionId: { type: Schema.Types.ObjectId, ref: 'questions' },

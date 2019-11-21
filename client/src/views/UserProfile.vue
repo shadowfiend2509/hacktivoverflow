@@ -1,28 +1,28 @@
 <template>
-  <div class="profileUser2 border">
-    <div class="mainProfile2 border">
-      <div class='imageProfile2 border mt-3 ml-3'>
-        <div class="cardUser2 border">
+  <div class="profileUser2">
+    <div class="mainProfile2">
+      <div class='imageProfile2 mt-3 ml-3'>
+        <div class="cardUser2">
           <div>
             <img :src="user.profile_image" alt="profile_image" style='width: 21vh'>
           </div>
           <div>
-            <b-badge class='btntag ml-1'>
-              <unicon name='gold'></unicon> <a href='#' @click='actionClick(user._id, "gold")'>{{user.gold.length}} <small>gold</small></a>
+            <b-badge class='btntag ml-1 w-full' v-if='user.point > 800' style='width: 250px'>
+              <unicon name='gold'></unicon> <a style='color: gold'>{{user.point}} &nbsp; <small>gold</small></a>
             </b-badge>
-            <b-badge class='btntag ml-1'>
-              <unicon name='smile'></unicon> <a href='#' @click='actionClick(user._id, "silver")'>{{user.silver.length}} <small>silver</small></a>
+            <b-badge class='btntag ml-1' v-else-if='user.point > 200 && user.point < 800' style='width: 250px'>
+              <unicon name='smile'></unicon> <a style='color: silver'>{{user.point}} &nbsp; <small>silver</small></a>
             </b-badge>
-            <b-badge class='btntag ml-1'>
-              <unicon name='annoyed'></unicon> <a href='#' @click='actionClick(user._id, "bronze")'>{{user.bronze.length}} <small>bronze</small></a>
+            <b-badge class='btntag ml-1' v-else style='width: 250px'>
+              <unicon name='annoyed'></unicon> <a style='color: black'>{{user.point}} &nbsp; <small>bronze</small></a>
             </b-badge>
           </div>
         </div>
         <div class='ml-3 mt-2'>
-          <h1>{{user.username}}</h1>
+          <h1>{{user.username.toUpperCase()}}</h1>
         </div>
       </div>
-      <div class="rightProfile2 border mt-3">
+      <div class="rightProfile2 mt-3">
         <div class="right-topProfile">
           <div class="question2 mr-5">
             <div>
@@ -52,7 +52,7 @@
         </div>
       </div>
     </div>
-    <div class="questionProfile2 border">
+    <div class="questionProfile2">
       <div v-for='question in questions' :key='question._id'>
         <QuestionforProfile :get-question='question'></QuestionforProfile>
       </div>
@@ -81,24 +81,6 @@ export default {
     }
   },
   methods: {
-    actionClick (id,name) {  
-      axios({
-        method: 'patch',
-        url: `/users/medal/${id}`,
-        data: {
-          medal: name
-        },
-        headers: {
-          token: localStorage.getItem('token')
-        }
-      })
-        .then(({data}) => {
-          this.user = data.user
-        })
-        .catch(err => {
-          this.$awn.warning(err.response.data.msg)
-        })
-    },
     fetchUser (id) {
       axios({
         method: 'get',

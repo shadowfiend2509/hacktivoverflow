@@ -182,10 +182,7 @@ export default new Vuex.Store({
       return new Promise ((resolve, reject) => {
       axios({
         method: 'patch',
-        url: `/questions/up`,
-        data: {
-        id: payload
-        },
+        url: `/questions/up/${payload}`,
         headers: {
         token: localStorage.getItem('token')
         }
@@ -202,10 +199,7 @@ export default new Vuex.Store({
       return new Promise ((resolve, reject) => {
       axios({
         method: 'patch',
-        url: '/questions/down',
-        data: {
-        id: payload
-        },
+        url: `/questions/down/${payload}`,
         headers: {
         token: localStorage.getItem('token')
         }
@@ -220,42 +214,36 @@ export default new Vuex.Store({
     },
     plusVoteAnswer (context, payload) {
       return new Promise ((resolve, reject) => {
-      axios({
-        method: 'patch',
-        url: '/answers/up',
-        data: {
-        id: payload
-        },
-        headers: {
-        token: localStorage.getItem('token')
-        }
-      })
-        .then(({data}) => {
-        resolve(data)
+        axios({
+          method: 'patch',
+          url: `/answers/up/${payload}`,
+          headers: {
+          token: localStorage.getItem('token')
+          }
         })
-        .catch(err => {
-        reject(err)
+          .then(({data}) => {
+            resolve(data)
+          })
+          .catch(err => {
+            reject(err)
+          })
         })
-      })
     },
     minVoteAnswer (context, payload) {
       return new Promise ((resolve, reject) => {
-      axios({
-        method: 'patch',
-        url: '/answers/down',
-        data: {
-        id: payload
-        },
-        headers: {
-        token: localStorage.getItem('token')
-        }
-      })
-      .then(({data}) => {
-        resolve(data)
-      })
-      .catch(err => {
-        reject(err)
-      })
+        axios({
+          method: 'patch',
+          url: `/answers/down/${payload}`,
+          headers: {
+          token: localStorage.getItem('token')
+          }
+        })
+        .then(({data}) => {
+          resolve(data)
+        })
+        .catch(err => {
+          reject(err)
+        })
       })
     }
   },

@@ -11,36 +11,35 @@ module.exports = {
         res.status(200).json(questions)
       })
       .catch(next)
- },
- findQuestionUser (req,res,next) {
-  const UserId = new mongoose.Types.ObjectId(req.loggedUser.id)
-  console.log(UserId)
-  Question.find({ UserId }).exec()
-    .then(question => {
-    // console.log(question)
-      res.status(200).json(question)
-    })
-    .catch(next);
+  },
+  findQuestionUser (req,res,next) {
+    const UserId = new mongoose.Types.ObjectId(req.loggedUser.id)
+    Question.find({ UserId }).exec()
+      .then(question => {
+        res.status(200).json(question)
+      })
+      .catch(next);
+  },
+  getTopQuestion (req, res, next) {
+    Question.find().sort([['views', 1]]).populate('UserId')
+      .then(questions => {
+        res.status(200).json({questions})
+      })
+      .catch(next)
   },
   findOneQuestion (req,res,next) {
-  const _id = req.params.id;
-  console.log(req.params.id)
-  Question.findById({_id})
-    .then(question => {
-      console.log('before update')
-      console.log(question)
-      let newViews = Number(question.views) + 1
-      return Question.findByIdAndUpdate(_id, { views: newViews}, {new: true}).populate('UserId')
-    })
-    .then(question1 => {
-      console.log('after update')
-      console.log(question1)
-      res.status(200).json(question1)
-    })
-    .catch(next)
+    const _id = req.params.id;
+    Question.findById({_id})
+      .then(question => {
+        let newViews = Number(question.views) + 1
+        return Question.findByIdAndUpdate(_id, { views: newViews}, {new: true}).populate('UserId')
+      })
+      .then(question1 => {
+        res.status(200).json(question1)
+      })
+      .catch(next)
   },
   create (req,res,next) {
-    console.log(req.body.tags)
     const UserId = req.loggedUser.id
     const { title, description, tags } = req.body;
     Question.create({ title, description, UserId, tags })
@@ -92,7 +91,7 @@ module.exports = {
   },
   searchTitle (req,res,next) {
   const title = req.params.name;
-  Question.find({title: new RegExp(title, 'i')})
+  Question.find({title: new RegExp(title, 'i')}).populate('UserId')
     .then(datas => {
       res.status(200).json(datas)
     })
@@ -100,7 +99,7 @@ module.exports = {
   },
   updateUpVote (req,res,next) {
     const id = req.loggedUser.id
-    const _id = req.body.id
+    const _id = req.params.id
     Question.findById({_id})
       .then(question => {
         let pass = true;
@@ -127,7 +126,7 @@ module.exports = {
   },
   updateDownVote (req,res,next) {
     const id = req.loggedUser.id
-    const _id = req.body.id
+    const _id = req.params.id
     Question.findById({_id})
       .then(question => {
         let pass = true;
@@ -165,14 +164,14 @@ module.exports = {
         res.status(200).json({msg: "success delete all"})
       })
       .catch(next)
-    },
-    updateQuestion (req,res,next) {
-      const _id = req.params.id
-      Question.findByIdAndUpdate({_id},{title: req.body.title, description: req.body.description})
-        .then(_ => {
-        res.status(201).json({msg: 'success update'})
-        })
-        .catch(next)
+  },
+  updateQuestion (req,res,next) {
+    const _id = req.params.id
+    Question.findByIdAndUpdate({_id},{title: req.body.title, description: req.body.description})
+      .then(_ => {
+      res.status(201).json({msg: 'success update'})
+      })
+      .catch(next)
   },
   findByWatchTag (req, res, next) {
     let tempUserWatch 
@@ -192,7 +191,7 @@ module.exports = {
             })
           })
         })
-        res.status(200).json({question: tempQuestionWatchTag})
+        res.status(200).json({questions: tempQuestionWatchTag})
       })
       .catch(next)
   }

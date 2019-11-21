@@ -8,6 +8,7 @@
 
 <script>
 import RatingCard from '../components/RatingCard'
+import axios from '@/apis/server.js'
 
 export default {
   data () {
@@ -19,19 +20,24 @@ export default {
     RatingCard
   },
   methods: {
-  getQuestion () {
-    this.$store.dispatch('fetchData')
-      .then(data => {
-        this.questions = d
-        this.$awn.success('Fetching Voting')
+  getTopQuestion () {
+    this.$Progress.start()
+    axios({
+      method: 'get',
+      url: '/questions/top'
+    })
+      .then(({data}) => {
+        this.questions = data.questions.reverse()
+        this.$Progress.finish()
       })
       .catch(err => {
-        this.$awn.warning(err)
+        this.$awn.warning(err.response.data.msg)
+        this.$Progress.fail()
       })
     }
   },
   created () {
-  this.getQuestion()
+    this.getTopQuestion()
   }
 }
 </script>

@@ -18,9 +18,9 @@ Vue.use(VueProgressBar, {
 })
 import Unicon from 'vue-unicons'
 
-import { uniArrowUp, uniArrowDown, uniFastMail, uniUser, uniGold, uniSmile, uniAnnoyed, uniLocationPoint, uniStopwatch, uniStopwatchSlash } from 'vue-unicons/src/icons'
+import { uniArrowUp, uniArrowDown, uniFastMail, uniUser, uniGold, uniSmile, uniAnnoyed, uniLocationPoint, uniStopwatch, uniStopwatchSlash, uniEye ,uniEyeSlash,uniMessage} from 'vue-unicons/src/icons'
 
-Unicon.add([uniArrowUp, uniArrowDown, uniFastMail, uniUser, uniGold, uniSmile, uniAnnoyed, uniLocationPoint, uniStopwatch, uniStopwatchSlash])
+Unicon.add([uniArrowUp, uniArrowDown, uniFastMail, uniUser, uniGold, uniSmile, uniAnnoyed, uniLocationPoint, uniStopwatch, uniStopwatchSlash, uniEye,uniEyeSlash,uniMessage])
 Vue.use(Unicon)
 
 

@@ -24,7 +24,7 @@
           <h6>{{ answerData.length }} Answer</h6><unicon name='fast-mail'></unicon>
         </div>
         <div class='ml-5'>
-          {{ question.views }} views
+          <b-badge class='btntag1'><unicon name='eye'></unicon> {{ question.views }} views</b-badge>
         </div>
         </div>
         <div class="col-4">
@@ -63,8 +63,6 @@ export default {
       this.$Progress.start()
       this.$store.dispatch('plusVote', id)
         .then(data => {
-          console.log(data)
-          this.$awn.success('You like this question, u can add to favorite by click the star')
           this.$emit('fetchAgain')
           setTimeout(() => {
             this.$Progress.finish()
@@ -79,7 +77,9 @@ export default {
             }, 3000);
           }else{
             this.$awn.warning(err.response.data.msg)
-            this.$Progress.fail()
+            setTimeout(() => {
+              this.$Progress.fail()
+            }, 1000);
           }
         })
     },
@@ -87,8 +87,6 @@ export default {
       this.$Progress.start()
       this.$store.dispatch('minVote', id)
         .then(data => {
-          console.log(data)
-          this.$awn.success('You dislike this question')
           this.$emit('fetchAgain')
           setTimeout(() => {
             this.$Progress.finish()
@@ -138,6 +136,12 @@ export default {
 </script>
 
 <style>
+.upp {
+  cursor: pointer;
+}
+.downn {
+  cursor: pointer;
+}
 h6{
   margin-left: 2px;
 }
@@ -171,5 +175,9 @@ h3{
 }
 .qright {
   background-color: white;
+}
+.btntag1 {
+  color: black !important;
+  background-color: #feca57 !important;
 }
 </style>

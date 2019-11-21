@@ -2,18 +2,16 @@ const Mongoose = require('mongoose');
 const Schema = Mongoose.Schema;
 
 const QSchema = new Schema ({
-  title: { type: String, required: true },
-  description: { type: String, required: true },
+  title: { type: String, required: [true, 'title is required'] },
+  description: { type: String, required: [true, 'description is required'] },
   upvotes: [],
   downvotes: [],
   tags: [],
   UserId: { type: Schema.Types.ObjectId, ref: 'users' },
-  createdAt: Date,
   views: Number
-})
+}, {timestamps: true})
 
 QSchema.pre('save', function (next) {
-  this.createdAt = new Date()
   this.upvotes = [];
   this.views = 0;
   this.downvotes = [];

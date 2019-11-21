@@ -14,7 +14,6 @@
       <input type="email" id="email" name="email" v-model='email'>
     </div>
     <div class="group">
-      <label for="email">Email:</label>
       <select v-model='city'>
         <option value='Jakarta'>Jakarta</option>
         <option value='Palembang'>Palembang</option>
@@ -23,7 +22,6 @@
         <option value="Batam">Batam</option>
         <option value="Papua">Papua</option>
       </select>
-      <input type="email" id="email" name="email" v-model='email'>
     </div>
       <input type="submit" value="register" id="submit">
   </form>

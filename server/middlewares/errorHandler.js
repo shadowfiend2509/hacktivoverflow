@@ -1,8 +1,18 @@
 module.exports = (err,req,res,next) => {
   console.log(err.kind)
-  if(err.name == 'ValidationError'){
-    res.status(403).json({ msg: 'Validation Error Please check your input' })
-  }else if(err.code == 11000){
+  if(err.errors && err.errors.password) {
+    res.status(400).json({msg: err.errors.password.message})
+  } else if(err.errors && err.errors.username) {
+    res.status(400).json({msg: err.errors.username.message})
+  } else if(err.errors && err.errors.email) {
+    res.status(400).json({msg: err.errors.email.message})
+  } else if(err.errors && err.errors.title) {
+    res.status(400).json({msg: err.errors.title.message})
+  } else if(err.errors && err.errors.description) {
+    res.status(400).json({msg: err.errors.description.message})
+  } else if(err.errors && err.errors.response) {
+    res.status(400).json({msg: err.errors.response.message})
+  } else if(err.code == 11000){
     res.status(403).json({ msg: 'Email allready used!' })
   }else if(err.msg == 'wrong'){
     res.status(403).json({ msg: 'username/password wrong!' })

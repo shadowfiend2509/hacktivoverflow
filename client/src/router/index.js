@@ -8,7 +8,34 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: Home
+    component: Home,
+    children: [
+      {
+        path: '',
+        name: 'questionHome',
+        component: () => import(/* webpackChunkName: "questionHome" */ '../views/QuestionView.vue')
+      },
+      {
+        path: '/rating',
+        name: 'rating',
+        component: () => import(/* webpackChunkName: 'rating' */ '../views/Rating.vue')
+      },
+      {
+        path: '/watch/tag',
+        name: 'watchTag',
+        component: () => import(/* webpackChuckName: "watchTag" */ '../views/WatchTag.vue')
+      },
+      {
+        path: '/tag/:name',
+        name: 'tag',
+        component: () => import(/* webpackChunkName: 'tag' */ '../views/FindTag.vue')
+      }
+    ]
+  },
+  {
+    path: '/chat',
+    name: 'chat',
+    component: () => import(/* webpackChunkName: "chat" */ '../views/Chat.vue')
   },
   {
     path: '/login',
@@ -39,19 +66,9 @@ const routes = [
     component: () => import(/* webpackChunkName: 'details' */ '../views/Detail.vue')
   },
   {
-    path: '/tag/:name',
-    name: 'tag',
-    component: () => import(/* webpackChunkName: 'tag' */ '../views/FindTag.vue')
-  },
-  {
     path: '/search/:name',
     name: 'search',
     component: () => import(/* webpackChunkName: 'search' */ '../views/Search.vue')
-  },
-  {
-    path: '/rating',
-    name: 'rating',
-    component: () => import(/* webpackChunkName: 'rating' */ '../views/Rating.vue')
   },
   {
     path: '/profile',

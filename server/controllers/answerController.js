@@ -1,4 +1,5 @@
 const Answer = require('../models/answer');
+const User = require('../models/user');
 const mongoose = require('mongoose')
 
 
@@ -25,14 +26,23 @@ module.exports = {
     const UserId = req.loggedUser.id;
     const QuestionId = req.params.id;
     const { response } = req.body;
+    let answer 
     Answer.create({ response, QuestionId, UserId })
       .then(data => {
-        res.status(201).json({ data, msg: 'Successfully Created!' })
+        answer = data
+        return User.findById(UserId)
+      })
+      .then(user => {
+        const newPoint = Number(user.point) + 10
+        return User.findByIdAndUpdate(UserId, {point: newPoint}, {new: true})
+      })
+      .then(user => {
+        res.status(201).json({ data: answer, msg: 'Successfully Created!', user })
       })
       .catch(next)
   },
   updateUpAnswer (req,res,next) {
-    const _id = req.body.id
+    const _id = req.params.id
     const id = req.loggedUser.id //userid
     Answer.findById({_id})
       .then(answer => {
@@ -57,7 +67,7 @@ module.exports = {
       .catch(next)
   },
   updateDownVote (req,res,next) {
-    const _id = req.body.id
+    const _id = req.params.id
     const id = req.loggedUser.id //userid
     Answer.findById({_id})
       .then(answer => {

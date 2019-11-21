@@ -40,64 +40,62 @@ module.exports = {
       })
       .catch(next)
   },
-  updateMedal (req, res, next) {
-    const id = req.params.id
-    const medal = req.body.medal;
-    let pass = true
-    if(medal == 'gold') {
-      User.findById(id)
-        .then(user => {
-          user.gold.forEach((el, i) => {
-            if(el == req.loggedUser.id){
-              pass = false;
-            }
-          })
-          if(!pass) return User.findByIdAndUpdate(id, {$pull: {gold: req.loggedUser.id}}, {new: true})
-          else return User.findByIdAndUpdate(id, {$push: {gold: req.loggedUser.id}}, {new: true})
-        })
-        .then(user => {
-          res.status(200).json({user})
-        })
-        .catch(next)
-    }else if(medal == 'silver') {
-      User.findById(id)
-        .then(user => {
-          user.silver.forEach((el, i) => {
-            if(el == req.loggedUser.id){
-              pass = false;
-            }
-          })
-          if(!pass) return User.findByIdAndUpdate(id, {$pull: {silver: req.loggedUser.id}}, {new: true})
-          else return User.findByIdAndUpdate(id, {$push: {silver: req.loggedUser.id}}, {new: true})
-        })
-        .then(user => {
-          res.status(200).json({user})
-        })
-        .catch(next)
-    } else if(medal == 'bronze') {
-      User.findById(id)
-        .then(user => {
-          user.bronze.forEach((el, i) => {
-            if(el == req.loggedUser.id){
-              pass = false;
-            }
-          })
-          if(!pass) return User.findByIdAndUpdate(id, {$pull: {bronze: req.loggedUser.id}}, {new: true})
-          else return User.findByIdAndUpdate(id, {$push: {bronze: req.loggedUser.id}}, {new: true})
-        })
-        .then(user => {
-          res.status(200).json({user})
-        })
-        .catch(next)
-    }
-  },
+  // updateMedal (req, res, next) { //tidak jadi
+  //   const id = req.params.id
+  //   const medal = req.body.medal;
+  //   let pass = true
+  //   if(medal == 'gold') {
+  //     User.findById(id)
+  //       .then(user => {
+  //         user.gold.forEach((el, i) => {
+  //           if(el == req.loggedUser.id){
+  //             pass = false;
+  //           }
+  //         })
+  //         if(!pass) return User.findByIdAndUpdate(id, {$pull: {gold: req.loggedUser.id}}, {new: true})
+  //         else return User.findByIdAndUpdate(id, {$push: {gold: req.loggedUser.id}}, {new: true})
+  //       })
+  //       .then(user => {
+  //         res.status(200).json({user})
+  //       })
+  //       .catch(next)
+  //   }else if(medal == 'silver') {
+  //     User.findById(id)
+  //       .then(user => {
+  //         user.silver.forEach((el, i) => {
+  //           if(el == req.loggedUser.id){
+  //             pass = false;
+  //           }
+  //         })
+  //         if(!pass) return User.findByIdAndUpdate(id, {$pull: {silver: req.loggedUser.id}}, {new: true})
+  //         else return User.findByIdAndUpdate(id, {$push: {silver: req.loggedUser.id}}, {new: true})
+  //       })
+  //       .then(user => {
+  //         res.status(200).json({user})
+  //       })
+  //       .catch(next)
+  //   } else if(medal == 'bronze') {
+  //     User.findById(id)
+  //       .then(user => {
+  //         user.bronze.forEach((el, i) => {
+  //           if(el == req.loggedUser.id){
+  //             pass = false;
+  //           }
+  //         })
+  //         if(!pass) return User.findByIdAndUpdate(id, {$pull: {bronze: req.loggedUser.id}}, {new: true})
+  //         else return User.findByIdAndUpdate(id, {$push: {bronze: req.loggedUser.id}}, {new: true})
+  //       })
+  //       .then(user => {
+  //         res.status(200).json({user})
+  //       })
+  //       .catch(next)
+  //   }
+  // },
   login (req,res,next) {
     const { request, password } = req.body;
-    console.log(req.body)
     if(request && password) {
       User.findOne({ $or: [{username: request}, {email: request}] })
         .then(user => {
-          console.log(user)
           if(user && comparePassword(password, user.password)){
             const payload = {
               id: user._id,
@@ -116,20 +114,19 @@ module.exports = {
     }
   },
   register (req,res,next) {
+    console.log(req.body)
     const { username, password, email, city } = req.body;
     User.create({ username, password, email, city })
-      .then(data => {
+      .then(user => {
         const payload = { 
-          id: data._id,
-          username: data.username,
-          email: data.email
+          id: user._id,
+          username: user.username,
+          email: user.email
         };
         const serverToken = signToken(payload);
-        res.status(201).json({ token: serverToken, msg: 'Success Register', data })
+        res.status(201).json({ token: serverToken, msg: 'Success Register', user })
       })
-      .catch(err=>{
-        next(err)
-      })
+      .catch(next)
   },
   addToWatchTag (req, res, next) {
     const nameTag = req.body.tag;
@@ -147,5 +144,11 @@ module.exports = {
       })
       .catch(next)
   },
-
+  getByContribution (req, res, next) {
+    User.find().sort([['point', 1]])
+      .then(users => {
+        res.status(200).json({users})
+      })
+      .catch(next)
+  }
 }
